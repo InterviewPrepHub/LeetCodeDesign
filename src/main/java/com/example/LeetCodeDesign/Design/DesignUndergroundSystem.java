@@ -2,6 +2,8 @@ package com.example.LeetCodeDesign.Design;
 
 import java.util.HashMap;
 
+//https://www.youtube.com/watch?v=HJeMXqx0ADQ&ab_channel=AlgorithmsMadeEasy
+
 public class DesignUndergroundSystem {
 
     HashMap<Integer, ArrivalInfo> checkInMap;
@@ -33,7 +35,7 @@ public class DesignUndergroundSystem {
 
             double[] pair = new double[2];
             pair[0] += total_time;
-            pair[1] ++;
+            pair[1] ++; // this is the total no times the travel happened between start and end station
             checkoutMap.put(key, pair);
 
         }

@@ -40,6 +40,12 @@ public class DesignTwitter {
         tweetMap.get(userId).add(0, new Tweet(userId, tweetId));
     }
 
+    /*
+    Retrieves the 10 most recent tweet IDs in the user's news feed. Each item in the news feed must be posted by users
+    who the user followed or by the user themself. Tweets must be ordered from most recent to least recent.
+
+     */
+
     public List<Integer> getNewsFeed(int userId) {
         List<Integer> newsFeed = new ArrayList<>();
         PriorityQueue<Tweet> pq = new PriorityQueue<>((a,b) -> (int)(b.timestamp - a.timestamp));
