@@ -35,9 +35,9 @@ public class Controller {
 
         collectParentLevels(levelId, accessibleLevels); // collect upwards
 
-        Set<Integer> toExplore = new HashSet<>(accessibleLevels);
+        Set<Integer> findLevelsDownwards = new HashSet<>(accessibleLevels);
 
-        toExplore.forEach(l -> collectChildLevels(l, accessibleLevels));    //collect downwards
+        findLevelsDownwards.forEach(l -> collectChildLevels(l, accessibleLevels));    //collect downwards
     }
 
     private void collectParentLevels(int levelId, Set<Integer> accessibleLevels) {
