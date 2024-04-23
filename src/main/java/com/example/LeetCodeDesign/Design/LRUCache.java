@@ -3,91 +3,100 @@ package com.example.LeetCodeDesign.Design;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    We will remove element from bottom and add element on head of LinkedList and whenever any DNode is accessed ,
+    it will be moved to top. so that recently used entries will be on Top and Least used will be on Bottom.
+    https://krishankantsinghal.medium.com/my-first-blog-on-medium-583159139237
+     */
 public class LRUCache {
 
-    Node head;
-    Node tail;
-    Map<Integer, Node> map;
-    int capacity;
-
-    LRUCache() {
-        head = new Node(0, 0);
-        tail = new Node(0, 0);
-        head.next = tail;
-        tail.prev = head;
-        head.prev = null;
-        tail.next = null;
-        map = new HashMap<>();
-        capacity = 3;
+    Map<Integer, DNode> map;
+    DNode head, tail;
+    int capacity = 4; // Here i am setting 4 to test the LRU cache
+    // implementation, it can make be dynamic
+    public LRUCache() {
+        map = new HashMap<Integer, DNode>();
     }
 
-    private void addToHead(Node newNode) {
-        newNode.next = head.next;
-        newNode.next.prev = newNode;
-        newNode.prev = head;
-        head.next = newNode;
-
-    }
-
-    private void removeNode(Node newNode) {
-        newNode.prev.next = newNode.next;
-        newNode.next.prev = newNode.prev;
-    }
-
-    public int get(int key) {
-        int res = map.get(key).value;
-        if (map.containsKey(key)) {
-            Node node = new Node(key, res);
-            removeNode(node);
-            addToHead(node);
-            return res;
+    public int getEntry(int key) {
+        if (map.containsKey(key)) { // Key Already Exist, just update the
+            DNode DNode = map.get(key);
+            removeNode(DNode);
+            addAtTop(DNode);
+            return DNode.value;
         }
         return -1;
     }
 
-    public void put(int key, int value) {
-
-        if (map.containsKey(key)) {
-            Node existingNode = new Node(key, value);
-            removeNode(existingNode);
-            addToHead(existingNode);
+    public void putEntry(int key, int value) {
+        if (map.containsKey(key)) { // Key Already Exist, just update the value and move it to top
+            DNode DNode = map.get(key);
+            DNode.value = value;
+            removeNode(DNode);
+            addAtTop(DNode);
         } else {
-            Node newNode = new Node(key, value);
-            if(map.size() < capacity) {
-                map.put(key, newNode);
-                addToHead(newNode);
+            DNode newnode = new DNode();
+            newnode.left = null;
+            newnode.right = null;
+            newnode.value = value;
+            newnode.key = key;
+            if (map.size() > capacity) {// We have reached maxium size so need to make room for new element.
+                map.remove(tail.key);
+                removeNode(tail);
+                addAtTop(newnode);
             } else {
-                map.remove(tail.prev.key);
-                removeNode(tail.prev);
-                addToHead(newNode);
+                addAtTop(newnode);
             }
+
+            map.put(key, newnode);
+        }
+    }
+    public void addAtTop(DNode node) {
+        node.right = head;
+        node.left = null;
+        if (head != null)
+            head.left = node;
+        head = node;
+        if (tail == null)
+            tail = head;
+    }
+
+    public void removeNode(DNode node) {
+
+        if (node.left != null) {
+            node.left.right = node.right;
+        } else {
+            head = node.right;
         }
 
+        if (node.right != null) {
+            node.right.left = node.left;
+        } else {
+            tail = node.left;
+        }
     }
+    public static void main(String[] args) throws Exception {
+        // your code goes here
+        LRUCache lrucache = new LRUCache();
+        lrucache.putEntry(1, 1);
+        lrucache.putEntry(10, 15);
+        lrucache.putEntry(15, 10);
+        lrucache.putEntry(10, 16);
+        lrucache.putEntry(12, 15);
+        lrucache.putEntry(18, 10);
+        lrucache.putEntry(13, 16);
 
+        System.out.println(lrucache.getEntry(1));
+        System.out.println(lrucache.getEntry(10));
+        System.out.println(lrucache.getEntry(15));
 
-    public static void main(String[] args) {
-        LRUCache lru = new LRUCache();
-        lru.put(1,1);
-        lru.put(2,2);
-        lru.put(3,3);
-        lru.get(2);
-        lru.put(4,4);
     }
+    
 }
 
-
-class Node {
-
-    int key;
+class DNode {
     int value;
-    Node next;
-    Node prev;
-
-    Node(int key, int value) {
-        this.key = key;
-        this.value = value;
-        next = null;
-        prev = null;
-    }
+    int key;
+    DNode left;
+    DNode right;
 }

@@ -168,3 +168,53 @@ class HierarchyEntity {
 }
 
 
+/*
+Building a User Access Management system based on a company’s hierarchical structure.
+
+User
+
+HierarchyEntity
+TATA
+TATA Steel
+TS Karnataka
+TSK Bangalore
+TSK Mangalore
+TS Gujarat
+TSG Ahmedabad
+TATA Motors
+™ Maharashtra
+Mumbai
+Pune
+
+Resource
+Invoice
+Permission
+READ
+WRITE
+FILING
+
+UserA
+Has administrative access to all invoices of TATA Motors
+User A, TATA Motors, Invoice, [READ, WRITE, FILING]
+UserB
+Has administrative access to all invoices of TATA Motors Pune - if we are in the lowest level, then we do not have exclusive acces to one level above
+User B, TATA Motors Maharashtra Pune, Invoice, [READ, WRITE, FILING]
+
+Query Access Pattern
+Specific Authorisation Request
+User, Resource, Permission, Scope (Hierarcical Entity)
+UserA, Invoice, READ, TS Gujarat
+True or False
+Accessible Hierarchy
+User, Resource, Permission
+UserB, Invoice, WRITE - get the entire hierarchy itself for user B which writes to TATA Motors Maharashtra Pune
+Hierarchy
+TATA(False)
+TATA Motors(False)
+™ Maharashtra (False)
+Pune (True)
+
+Assumption
+All resources belong to the lowest level of an hierarchy
+
+ */
