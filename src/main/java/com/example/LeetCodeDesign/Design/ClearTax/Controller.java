@@ -51,12 +51,14 @@ public class Controller {
     }
 
     private void collectChildLevels(int levelId, Set<Integer> accessibleLevels) {
-        levelMap.values().stream()
-                .filter(l -> Objects.equals(l.getParentLevelId(), levelId))
-                .forEach(l -> {
-                    accessibleLevels.add(l.getLevelId());
-                    collectChildLevels(l.getLevelId(), accessibleLevels); // Recursively collect all children
-                });
+        for (Map.Entry<Integer, Levels> entry : levelMap.entrySet()) {
+            Levels l = entry.getValue();
+
+            if (Objects.equals(l.getParentLevelId(), levelId)) {
+                accessibleLevels.add(l.getLevelId());
+                collectChildLevels(l.getLevelId(), accessibleLevels);
+            }
+        }
     }
 
     public static void main(String[] args) {
