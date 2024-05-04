@@ -1,0 +1,35 @@
+Design a system for facilitating hierarchical user access management as described below. The system should be capable of handling various tasks related to organizational hierarchy and user permissions.
+
+
+Establishing an organizational hierarchy with a variable number of levels (N levels).
+Defining various actions that users can undertake.
+Assignment of permissions to users, allowing them to perform actions at specific hierarchy levels.
+Implementing a cascading mechanism where permissions granted at higher levels extend to lower levels in the hierarchy.
+Resolving permissions using three parameters: User, Level, and Permission. If the combined evaluation of these parameters is true, the user possesses the necessary permission to execute an action.
+
+For instance, consider the independent hierarchy levels: L0, L1, L2
+L1 has two lower levels : L1.1, L1.2
+L2 has two lower levels : L2.1, L2.2
+L2.1 has one lower level : L2.1.1
+
+Here are some permission scenarios:
+User U1 is granted permission P1 at level L1.
+This implies that U1 holds P1 permission for all children of L1, including L1.1 and L1.2.
+User U2 is granted permissions P1 and P2 at level L2.1.1.
+User U3 is granted permission P1 at level L2 and permission P2 at level L2.1.1.
+Consequently, U3 possesses P1 permission for levels L2, L2.1, L2.2, and L2.1.1.
+However, U3 only has P2 permission at level L2.1.1.
+
+
+Assignments
+UI, P1, L1
+U2, P1, L2.1.1
+U2, P2, L2.1.1
+U3, P1, L2
+U3, P2, L2.1.1
+
+Test Cases
+{U1, P1, L1} = true
+{U1, P1, L1.1.3} = true
+{U1, P2, L1.3} = false
+{U3, P2, L2} = false
