@@ -1,5 +1,7 @@
 package com.example.LeetCodeDesign.Design;
 
+import java.util.*;
+
 /*
 Design a data structure that simulates an in-memory file system.
 
@@ -19,8 +21,6 @@ String readContentFromFile(String filePath) Returns the content in the file at f
 
 Example 1:
 
-
-
 Input
 ["FileSystem", "ls", "mkdir", "addContentToFile", "ls", "readContentFromFile"]
 [[], ["/"], ["/a/b/c"], ["/a/b/c/d", "hello"], ["/"], ["/a/b/c/d"]]
@@ -37,4 +37,99 @@ fileSystem.readContentFromFile("/a/b/c/d"); // return "hello"
 
  */
 public class DesignInMemoryFileSystem {
+
+    TrieNode root;
+
+    public DesignInMemoryFileSystem() {
+        root = new TrieNode();
+    }
+
+    public List<String> ls(String path) {
+        List<String> list = new ArrayList<>();
+        TrieNode node = root.search(path);
+        if(node == null) {
+            return list;
+        }
+
+        if (node.isFile) {
+            list.add(node.name);
+        } else {
+            list.addAll(node.children.keySet());
+        }
+        Collections.sort(list);
+        return list;
+    }
+
+    public void mkdir(String path) {
+        root.insert(path, false);
+    }
+
+    public void addContentToFile(String filePath, String content) {
+        TrieNode node = root.insert(filePath, true);
+        node.content.append(content);
+
+    }
+
+    public String readContentFromFile(String filePath) {
+        TrieNode node = root.search(filePath);
+        if(node!=null && node.isFile) {
+            return node.content.toString();
+        }
+        return "";
+    }
+
+    public static void main(String[] args) {
+        DesignInMemoryFileSystem fileSystem = new DesignInMemoryFileSystem();
+        List<String> list1 = fileSystem.ls("/"); // return []
+        System.out.println("get list :"+list1);
+        fileSystem.mkdir("/a/b/c");
+        fileSystem.addContentToFile("/a/b/c/d", "hello");
+        List<String> list2 = fileSystem.ls("/"); // return ["a"]
+        System.out.println("get list :"+list2);
+        fileSystem.readContentFromFile("/a/b/c/d"); // return "hello"
+    }
+}
+
+class TrieNode {
+    String name; // Name of the file or directory
+    boolean isFile; // Flag indicating whether it is a file or not
+    StringBuilder content = new StringBuilder(); // Content of the file if it is a file
+    Map<String, TrieNode> children = new HashMap<>(); // Child nodes, representing files and directories
+
+    // Method to insert a node and return the last node in the path.
+    TrieNode insert(String path, boolean isFile) {
+        TrieNode node = this;
+        String[] parts = path.split("/");
+
+        for (int i = 1; i < parts.length; ++i) {
+            String part = parts[i];
+            if (!node.children.containsKey(part)) {
+                node.children.put(part, new TrieNode());
+            }
+            node = node.children.get(part);
+        }
+
+        node.isFile = isFile;
+        if (isFile) {
+            node.name = parts[parts.length - 1]; // Set the name of the file
+        }
+
+        return node;
+    }
+
+    // Method to search for a node given a path.
+    TrieNode search(String path) {
+        TrieNode node = this;
+        String[] parts = path.split("/");
+
+        for (int i = 1; i < parts.length; ++i) {
+            String part = parts[i];
+            if (!node.children.containsKey(part)) {
+                return null; // Node not found
+            }
+            node = node.children.get(part);
+        }
+
+        return node; // Node found
+    }
 }

@@ -42,7 +42,7 @@ public class DesignFileSystem {
     }
 
     public boolean isValidPath(String path) {
-        int lastIndexPath = path.lastIndexOf("/");
+        int lastIndexPath = path.lastIndexOf("/");  //the index of the last occurrence of the specified substring
         if (lastIndexPath == -1) {
             return false;
         }

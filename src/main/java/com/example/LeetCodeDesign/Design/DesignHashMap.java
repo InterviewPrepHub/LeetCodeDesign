@@ -40,6 +40,11 @@ public class DesignHashMap {
     }
 
 
+    /*
+    Hashmap uses a hash function (some steps of operations), which generates an index value.
+    The Hash function should be designed in such a way that it should always generate an index
+    that exists in the range of [0, CAPACITY).
+     */
     private int findIndex(int key) {
         return key % MAX_SIZE;
     }
@@ -58,7 +63,7 @@ public class DesignHashMap {
     }
 
     private Node find(int key, int index) {
-        //check if linked list is empty at given index
+        //check if linked list/array is empty at given index
         if (buckets[index] == null) {
             buckets[index] = new Node(-1,-1);   //create dummy node
             return buckets[index];
