@@ -4,99 +4,120 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
-    We will remove element from bottom and add element on head of LinkedList and whenever any DNode is accessed ,
-    it will be moved to top. so that recently used entries will be on Top and Least used will be on Bottom.
-    https://krishankantsinghal.medium.com/my-first-blog-on-medium-583159139237
-     */
-public class LRUCache {
+Adding a node: Always add new nodes to the front (head) of the doubly linked list.
+Removing a node: Remove nodes from the back (tail) of the doubly linked list when the cache exceeds its capacity.
+Updating a node: When a node is accessed or updated, move it to the front (head) of the doubly linked list to mark it
+as the most recently used.
 
-    Map<Integer, DNode> map;
-    DNode head, tail;
-    int capacity = 4; // Here i am setting 4 to test the LRU cache
-    // implementation, it can make be dynamic
-    public LRUCache() {
-        map = new HashMap<Integer, DNode>();
+By maintaining the doubly linked list and the HashMap, you ensure that both the access (get) and insertion (put)
+operations are efficient, with an average time complexity of O(1).
+ */
+
+public class LRUCache<K,V> {
+
+    int capacity;
+    Map<K,Node> cache;
+    DoublyLinkedList<K,V> dll;
+
+    LRUCache(int capacity) {
+        this.capacity = capacity;
+        cache = new HashMap<>();
+        dll = new DoublyLinkedList<>();
     }
 
-    public int getEntry(int key) {
-        if (map.containsKey(key)) { // Key Already Exist, just update the
-            DNode DNode = map.get(key);
-            removeNode(DNode);
-            addAtTop(DNode);
-            return DNode.value;
+    public static void main(String[] args) {
+        LRUCache<Integer, Integer> lru = new LRUCache<>(2);
+
+        lru.put(1, 1);
+        lru.put(2, 2);
+        System.out.println(lru.get(1));
+
+        lru.put(3, 3);
+        System.out.println(lru.get(2));
+        System.out.println(lru.get(3));
+
+        lru.put(4, 4);
+        System.out.println(lru.get(1));
+        System.out.println(lru.get(3));
+        System.out.println(lru.get(4));
+    }
+
+    public V get(K key) {
+        if(!cache.containsKey(key)) {
+            return null;
         }
-        return -1;
+        Node node = cache.get(key);
+        dll.removeNode(node);
+        dll.addNodeToFront(node);
+        return (V) node.val;
     }
 
-    public void putEntry(int key, int value) {
-        if (map.containsKey(key)) { // Key Already Exist, just update the value and move it to top
-            DNode DNode = map.get(key);
-            DNode.value = value;
-            removeNode(DNode);
-            addAtTop(DNode);
-        } else {
-            DNode newnode = new DNode();
-            newnode.left = null;
-            newnode.right = null;
-            newnode.value = value;
-            newnode.key = key;
-            if (map.size() > capacity) {// We have reached maxium size so need to make room for new element.
-                map.remove(tail.key);
-                removeNode(tail);
-                addAtTop(newnode);
-            } else {
-                addAtTop(newnode);
+    public void put(K key, V value) {
+        if (!cache.containsKey(key)) {  //if key is not present in hashmap
+            Node node = new Node(key, value);
+            if (cache.size() >= capacity) {
+                Node tailNode = dll.removeTail(); // Remove the least recently used node
+                cache.remove(tailNode.key);
             }
-
-            map.put(key, newnode);
-        }
-    }
-    public void addAtTop(DNode node) {
-        node.right = head;
-        node.left = null;
-        if (head != null)
-            head.left = node;
-        head = node;
-        if (tail == null)
-            tail = head;
-    }
-
-    public void removeNode(DNode node) {
-
-        if (node.left != null) {
-            node.left.right = node.right;
+            cache.put(key, node);
+            dll.addNodeToFront(node);
         } else {
-            head = node.right;
-        }
-
-        if (node.right != null) {
-            node.right.left = node.left;
-        } else {
-            tail = node.left;
+            Node node = cache.get(key);
+            node.val = value; // Update the value of the existing node
+            dll.removeNode(node);
+            dll.addNodeToFront(node);
         }
     }
-    public static void main(String[] args) throws Exception {
-        // your code goes here
-        LRUCache lrucache = new LRUCache();
-        lrucache.putEntry(1, 1);
-        lrucache.putEntry(10, 15);
-        lrucache.putEntry(15, 10);
-        lrucache.putEntry(10, 16);
-        lrucache.putEntry(12, 15);
-        lrucache.putEntry(18, 10);
-        lrucache.putEntry(13, 16);
 
-        System.out.println(lrucache.getEntry(1));
-        System.out.println(lrucache.getEntry(10));
-        System.out.println(lrucache.getEntry(15));
 
+
+    class Node<K,V> {
+
+        K key;
+        V val;
+        Node next;
+        Node prev;
+
+        Node(K key, V val) {
+            this.key = key;
+            this.val = val;
+        }
+    }
+
+    class DoublyLinkedList<K,V> {
+
+        private Node head;
+        private Node tail;
+
+        DoublyLinkedList() {
+            head = new Node(null, null);
+            tail = new Node(null, null);
+            head.next = tail;
+            tail.prev = head;
+        }
+
+        void addNodeToFront(Node node) {
+            node.next = head.next;  // node -> tail
+            node.prev = head;   //head <- node
+            head.next.prev = node;  //  node <- tail
+            head.next = node;   // head -> node       head -> <- node -> <- tail
+        }
+
+        void removeNode(Node node) {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+
+        Node removeTail() {
+            if (tail.prev == head) {
+                return null; // List is empty
+            }
+            Node node = tail.prev;
+            removeNode(node);
+            return node;
+        }
     }
     
 }
 
-class DNode {
-    int value;
-    int key;
-    DNode left;
-    DNode right;
-}
+

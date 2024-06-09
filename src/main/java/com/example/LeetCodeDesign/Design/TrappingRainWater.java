@@ -1,55 +1,47 @@
 package com.example.LeetCodeDesign.Design;
 
+/*
+The trap method takes an array of heights as input and returns the total trapped water.
+We initialize two pointers left and right pointing to the leftmost and rightmost positions of the array, respectively.
+leftMax and rightMax are initialized to keep track of the maximum height encountered from the left and right, respectively.
+We move the pointers inward while updating leftMax and rightMax as necessary, and calculating the trapped water at each step.
+ */
 public class TrappingRainWater {
 
-    public static void main(String[] args) {
-        int[] input = {0,1,0,2,1,0,1,3,2,1,2,1};
-        //find max on the left
-        int[] maxLeft = getMaxLeft(input);
+    private static int trapWater(int[] input) {
 
-        //find max on the right
-        int[] maxRight = getMaxRight(input);
+        int left = 0;
+        int right = input.length-1;
 
-        int[] res = new int[input.length];
+        int leftMax = 0;
+        int rightMax = 0;
 
-        //min(left, right) index data
-        //min(left, right) - h[i]
-        for (int i=0;i<input.length;i++) {
-            res[i] = Math.min(maxLeft[i], maxRight[i])-input[i];
-        }
+        int trapped_water = 0;
 
-        int sum = 0;
-        for (int i=0;i< res.length;i++) {
-            if (res[i] >= 0) {
-                sum+=res[i];
+        while(left < right) {
+            if(input[left] < input[right]) {
+                if(input[left]  >= leftMax) {
+                    leftMax = input[left];
+                } else {
+                    trapped_water += leftMax - input[left];
+                }
+                left++;
+            } else {
+                if (input[left] >= rightMax) {
+                    rightMax = input[right];
+                } else {
+                    trapped_water += rightMax - input[right];
+                }
+                right--;
             }
         }
-        System.out.println(sum);
-
+        return trapped_water;
     }
 
-    private static int[] getMaxRight(int[] input) {
-        int[] maxRight = new int[input.length];
-        int maxSoFar = 0;
-        maxRight[input.length-1] = 0;
+    public static void main(String[] args) {
 
-        for (int i= input.length-2;i>=0;i--) {
-            maxSoFar = Math.max(maxSoFar, input[i+1]);
-            maxRight[i] = maxSoFar;
-        }
-        return maxRight;
-    }
+        int[] heights = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
+        System.out.println(trapWater(heights));
 
-    private static int[] getMaxLeft(int[] input) {
-
-        int[] maxLeft = new int[input.length];
-        int maxSofar = 0;
-        maxLeft[0] = 0;
-
-        for (int i = 1; i < input.length; i++) {
-            maxSofar = Math.max(maxSofar, input[i-1]);
-            maxLeft[i] = maxSofar;
-        }
-        return maxLeft;
     }
 }

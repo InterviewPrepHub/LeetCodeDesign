@@ -7,51 +7,71 @@ public class TrieImplementation {
 
     TNode root;
 
-    public void insert(String s) {
+    public TrieImplementation() {
+        root = new TNode();
+    }
+
+    public void insert(String word) {
         TNode current = root;
-        for (char ch: s.toCharArray()) {
-            TNode nodeToAdd = current.children.get(ch);
-            if (nodeToAdd==null) {
-                nodeToAdd = new TNode();
-                current.children.put(ch, nodeToAdd);
-            }
-            current = nodeToAdd;
+        for (char ch : word.toCharArray()) {
+            current.children.putIfAbsent(ch, new TNode());
+            current = current.children.get(ch);
         }
         current.endOfWord = true;
     }
 
     public boolean search(String word) {
         TNode current = root;
-        for (char w : word.toCharArray()) {
-            if (!current.children.containsKey(w)) {
+        for (char ch : word.toCharArray()) {
+            current = current.children.get(ch);
+            if(current == null) {
                 return false;
             }
-            current = current.children.get(w);
         }
-        return current!=null && current.endOfWord;
+        return current.endOfWord;
     }
 
+    // Method to check if any word in the Trie starts with the given prefix
     public boolean startsWith(String prefix) {
         TNode current = root;
         for (char p : prefix.toCharArray()) {
-            if (!current.children.containsKey(p)) {
-                return false;
-            }
             current = current.children.get(p);
+
+            if(current == null) {
+                return false; // If the character is not found, return false
+            }
         }
-        return current!=null;
+        return true; // If all characters in the prefix are found, return true
     }
 
-}
+    public static void main(String[] args) {
+        TrieImplementation trie = new TrieImplementation();
 
-class TNode {
+        // Inserting strings into the Trie
+        trie.insert("abcbd");
+        trie.insert("bcb");
 
-    Map<Character, TNode> children;
-    boolean endOfWord;
+        // Searching for strings in the Trie
+        System.out.println(trie.search("abcbd")); // Should print: true
+        System.out.println(trie.search("bcb"));   // Should print: true
+        System.out.println(trie.search("abcd"));  // Should print: false
 
-    TNode() {
-        children = new HashMap<>();
-        endOfWord = false;
+        // Checking for prefixes in the Trie
+        System.out.println(trie.startsWith("abc")); // Should print: true
+        System.out.println(trie.startsWith("bc"));  // Should print: true
+        System.out.println(trie.startsWith("abx")); // Should print: false
+    }
+
+    class TNode {
+
+        Map<Character, TNode> children;
+        boolean endOfWord;
+
+        TNode() {
+            children = new HashMap<>();
+            endOfWord = false;
+        }
+
     }
 
 }

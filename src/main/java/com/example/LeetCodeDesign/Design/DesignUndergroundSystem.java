@@ -65,41 +65,41 @@ public class DesignUndergroundSystem {
         double res4 = undergroundSystem.getAverageTime("Leyton", "Waterloo");    // return 12.00000. Three trips "Leyton" -> "Waterloo", (10 + 12 + 14) / 3 = 12
         System.out.println(res4);
     }
+
+    class ArrivalInfo {
+        int id;
+        String stationName;
+        int time;
+
+        public ArrivalInfo(int id, String stationName, int time) {
+            this.id = id;
+            this.stationName = stationName;
+            this.time = time;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getStationName() {
+            return stationName;
+        }
+
+        public int getTime() {
+            return time;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setStationName(String stationName) {
+            this.stationName = stationName;
+        }
+
+        public void setTime(int time) {
+            this.time = time;
+        }
+    }
 }
 
-
-class ArrivalInfo {
-    int id;
-    String stationName;
-    int time;
-
-    public ArrivalInfo(int id, String stationName, int time) {
-        this.id = id;
-        this.stationName = stationName;
-        this.time = time;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getStationName() {
-        return stationName;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setStationName(String stationName) {
-        this.stationName = stationName;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-}

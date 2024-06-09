@@ -17,10 +17,10 @@ printed in the given timestamp, otherwise returns false.
 Logger logger = new Logger();
 
 // logging string "foo" at timestamp 1
-logger.shouldPrintMessage(1, "foo"); returns true;
+logger.shouldPrintMessage(1, "foo"); returns true; - next allowed time for the message to be printed is t+10 is 11s
 
 // logging string "bar" at timestamp 2
-logger.shouldPrintMessage(2,"bar"); returns true;
+logger.shouldPrintMessage(2,"bar"); returns true; - next allowed time for the message to be printed is t+10 is 12s
 
 // logging string "foo" at timestamp 3
 logger.shouldPrintMessage(3,"foo"); returns false;
@@ -32,7 +32,7 @@ logger.shouldPrintMessage(8,"bar"); returns false;
 logger.shouldPrintMessage(10,"foo"); returns false;
 
 // logging string "foo" at timestamp 11
-logger.shouldPrintMessage(11,"foo"); returns true;
+logger.shouldPrintMessage(11,"foo"); returns true; - next allowed time is 11s for foo to get printed so it's true
 
  */
 
@@ -55,6 +55,7 @@ public class LoggerRateLimiter {
     //a queue to track message and their timestamp
     Queue<Message> queue;
     //a set to keep track of messages that are currently within the given timestamp say 10 sec window
+    //maintain a record of the last timestamp when each message was logged
     Set<String> messageSet;
 
     LoggerRateLimiter() {
@@ -73,7 +74,7 @@ public class LoggerRateLimiter {
     }
 
     public boolean shouldPrintMessage(int timestamp, String message) {
-        //remove message from queue and set that are older than 10 sec
+        //Remove messages from the front of the queue if they are older than 10 seconds compared to the current timestamp.
         while (!queue.isEmpty() && queue.peek().timestamp <= timestamp-10) {
             Message oldMessage = queue.poll();
             messageSet.remove(oldMessage.message);

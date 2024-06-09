@@ -43,7 +43,7 @@ public class DesignLeaderBoard {
 
     /**
      * @param k: Top k players.
-     * @return: Summary of the scores of the top k players.
+     * @return: summation of the scores of the top k players.
      */
     public int top(int k) {
         int sum = 0;

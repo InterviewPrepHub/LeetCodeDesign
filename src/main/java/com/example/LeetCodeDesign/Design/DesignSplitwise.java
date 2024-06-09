@@ -109,9 +109,9 @@ public class DesignSplitwise {
         app.addUser(new User("u4", "User4", "user4@example.com", "1234567893"));
 
         // Adding expenses
-        app.addExpense(new Expense("u1", 1000, 4, Arrays.asList("u1", "u2", "u3", "u4"), "EQUAL", null));
-        app.addExpense(new Expense("u1", 1250, 2, Arrays.asList("u2", "u3"), "EXACT", Arrays.asList(370.0, 880.0)));
-        app.addExpense(new Expense("u4", 1200, 4, Arrays.asList("u1", "u2", "u3", "u4"), "PERCENT", Arrays.asList(40.0, 20.0, 20.0, 20.0)));
+        app.addExpense(new Expense("u1", 1000, 4, Arrays.asList("u1", "u2", "u3", "u4"), ExpenseType.EQUAL, null));
+        app.addExpense(new Expense("u1", 1250, 2, Arrays.asList("u2", "u3"), ExpenseType.EXACT, Arrays.asList(370.0, 880.0)));
+        app.addExpense(new Expense("u4", 1200, 4, Arrays.asList("u1", "u2", "u3", "u4"), ExpenseType.PERCENT, Arrays.asList(40.0, 20.0, 20.0, 20.0)));
 
         // Showing balances
         app.showBalances();
@@ -234,10 +234,10 @@ class Expense {
     double totalAmount;
     int numOfUsers;
     List<String> usersInvolved;
-    String expenseType;
+    ExpenseType expenseType;
     List<Double> shares;
 
-    Expense(String paidBy, double totalAmount, int numOfUsers, List<String> usersInvolved, String expenseType, List<Double> shares) {
+    Expense(String paidBy, double totalAmount, int numOfUsers, List<String> usersInvolved, ExpenseType expenseType, List<Double> shares) {
         this.paidBy = paidBy;
         this.totalAmount = totalAmount;
         this.numOfUsers = numOfUsers;
@@ -245,4 +245,12 @@ class Expense {
         this.expenseType = expenseType;
         this.shares = shares;
     }
+}
+
+enum ExpenseType {
+
+    EQUAL,
+    EXACT,
+    PERCENT
+
 }

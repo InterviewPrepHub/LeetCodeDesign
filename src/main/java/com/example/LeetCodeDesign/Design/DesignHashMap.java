@@ -51,7 +51,7 @@ public class DesignHashMap {
 
     public void put(int key, int value) {
 
-        int index = findIndex(key);
+        int index = findIndex(key); //we need to get bucket index where i need to add the key-value entry
         Node prev = find(key, index);
 
         if (prev.next == null) {
@@ -62,6 +62,8 @@ public class DesignHashMap {
 
     }
 
+    //this method if for traversing the linked list at a given bucket index to
+    // locate the node with the given or its the last node in the list
     private Node find(int key, int index) {
         //check if linked list/array is empty at given index
         if (buckets[index] == null) {
@@ -70,11 +72,11 @@ public class DesignHashMap {
         }
 
         //traverses the list until it finds the target key or reaches the end of the list
-        Node prev = buckets[index];
-        while (prev.next!=null && prev.next.key == key) {
-            prev = prev.next;
+        Node curr = buckets[index];
+        while (curr.next!=null && curr.next.key == key) {
+            curr = curr.next;
         }
-        return prev;
+        return curr;
     }
 
     public int get(int key) {
